@@ -1,0 +1,59 @@
+name: Android Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    if: startsWith(github.event.head_commit.message, 'Build App')
+    name: Build APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.19.0
+
+      - name: Install dependencies
+        run: flutter pub get
+        working-directory: spheres
+
+      - name: Build APK
+        run: flutter build apk
+        working-directory: spheres
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: spheres/build/app/outputs/flutter-apk/app-release.apk
+
+  send:
+    needs: build
+    name: Send APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-release
+
+      - name: Compressing APK
+        run: 7z a app-release.7z app-release.apk
+
+      - name: Send Telegram notification
+        env:
+          API_TOKEN: ${{ secrets.BOT_API_TOKEN }}
+          USER_ID: ${{ secrets.USER_ID }}
+        run: |
+          curl -F "chat_id=${USER_ID}" \
+          -F "document=@app-release.7z" \
+          -F "caption=✅ spheres - $(TZ='Cuba' date +'%Y/%m/%d - %H:%M:%S')" \
+          "https://api.telegram.org/bot${API_TOKEN}/sendDocument"

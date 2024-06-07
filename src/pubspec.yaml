@@ -1,0 +1,38 @@
+name: gltfar
+description: "glTF-AR"
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  arcore_flutter_plugin:
+    git:
+      url:
+        https://github.com/giandifra/arcore_flutter_plugin
+  audioplayers: ^6.0.0
+  fluttertoast: ^8.2.4
+  gal: ^2.3.0
+  image: ^4.1.7
+  local_assets_server: ^2.0.2
+  path_provider: ^2.1.3
+  screenshot: ^2.5.0
+  vector_math: ^2.1.4
+  vibration: ^1.8.4
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/

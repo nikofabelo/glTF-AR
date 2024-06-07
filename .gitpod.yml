@@ -1,0 +1,22 @@
+tasks:
+  - init: |
+      if [ ! -f /workspace/flutter/bin/flutter ]; then
+        cd .. && curl https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.19.5-stable.tar.xz \
+        | tar -xJ
+      fi
+      exit
+
+  - command: |
+      while [ ! -f /workspace/flutter/bin/flutter ]; do
+        sleep 1
+      done
+      cd src
+      /workspace/flutter/bin/flutter pub get
+      exit
+
+vscode:
+  extensions:
+    - Dart-Code.dart-code
+    - Dart-Code.flutter
+    - eamodio.gitlens
+    - oderwat.indent-rainbow
